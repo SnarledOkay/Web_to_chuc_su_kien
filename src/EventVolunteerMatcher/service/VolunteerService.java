@@ -4,7 +4,6 @@ import EventVolunteerMatcher.data.DataBase;
 import EventVolunteerMatcher.entities.*;
 import EventVolunteerMatcher.utils.Utiles;
 
-import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -32,7 +31,7 @@ public class VolunteerService {
             }
         }
         System.out.print("Enter your age (age cannot be changed): ");
-        int age = 6;
+        int age ;
         while (true){
             age = utiles.enterInteger(scanner) ;
             if(age >= 100 || age < 6){
@@ -58,7 +57,7 @@ public class VolunteerService {
             }
         }
         utiles.viewLocation();
-        int chooseLocation=0 ;
+        int chooseLocation ;
         while(true){
             chooseLocation = utiles.enterInteger(scanner) ;
             if(chooseLocation <= 0 || chooseLocation>=DataBase.locationList.size()){
@@ -287,7 +286,7 @@ public class VolunteerService {
     public void reportAnotherUser(Scanner scanner,Volunteer volunteerReporter){
         utiles.viewAllUser();
         while(true){
-            int option = 1 ;
+            int option ;
             System.out.print("Choose user to report (choose 0 to escape): ");
             option = utiles.enterInteger(scanner) ;
             if(option == 0){
@@ -324,7 +323,7 @@ public class VolunteerService {
     public void reportAnAdmin(Scanner scanner,Volunteer volunteerReporter){
         utiles.viewAllAdmin();
         while(true){
-            int option = 1 ;
+            int option ;
             System.out.print("Choose admin to report (choose 0 to escape): ");
             option = utiles.enterInteger(scanner) ;
             if(option == 0){

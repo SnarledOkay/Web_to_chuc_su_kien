@@ -4,7 +4,6 @@ import EventVolunteerMatcher.data.DataBase;
 import EventVolunteerMatcher.entities.Event;
 import EventVolunteerMatcher.entities.Volunteer;
 
-import javax.xml.crypto.Data;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -85,13 +84,14 @@ public class Utiles {
     //kiem tra tinh hop ly cua ID code (dc dung de thay doi mat khau)
     public boolean checkIDCodeValidity(String IDcode){
         int number = 0;
+        int letter = 0 ;
         if(IDcode.length() != 6) return false ;
         for(int i = 0 ; i < 6 ; i++){
             if(IDcode.charAt(i) >= '0' && IDcode.charAt(i) <= '9') number++ ;
-            else if(IDcode.charAt(i) >= 'A' && IDcode.charAt(i) <= 'Z') ;
+            else if(IDcode.charAt(i) >= 'A' && IDcode.charAt(i) <= 'Z') letter++ ;
             else return false ;
         }
-        return number == 3;
+        return letter == 3 && number == 3;
     }
     //chon ngay thang
     public LocalDate setDateForEvent(Scanner scanner){
@@ -161,7 +161,7 @@ public class Utiles {
                     while(!choose) ;
                     break ;
             }
-            if(day>DataBase.harborVariable && month>DataBase.harborVariable && year>DataBase.harborVariable){;
+            if(day>DataBase.harborVariable && month>DataBase.harborVariable && year>DataBase.harborVariable){
                 if(month == 2){
                     if(year % 4 == 0 && year % 100 != 0){
                         if(day > 29) day = 29 ;
