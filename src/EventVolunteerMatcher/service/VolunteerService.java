@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class VolunteerService {
     Utiles utiles = new Utiles() ;
     EventService eventService = new EventService() ;
+    //tạo tài khoản mới
     public Volunteer createNewAccount(Scanner scanner){
         System.out.println("Enter information for new account (enter 'exit' to escape): ");
         System.out.print("Enter your username: ");
@@ -154,7 +155,7 @@ public class VolunteerService {
         ArrayList<Event> currentEvent = new ArrayList<>() ;
         return new Volunteer(age,telephoneNumber,location,email,username,password,yourEvent, currentEvent,pastEvent,pastEventCompleted,requestAccepted,requestRejected,pendingRequest,isAdmin,identificationCode,yourEventRejected, reasonEventRejected, yourEventAccepted, violation, justReceiveViolation, programNotification) ;
     }
-
+    //dang nhập tài khoản
     public Volunteer SignInService(Scanner scanner){
         System.out.print("Enter username: ");
         String username = scanner.nextLine() ;
@@ -199,7 +200,7 @@ public class VolunteerService {
         System.out.println("Password matched");
         return volunteer ;
     }
-
+    //dang ky tham gia su kien
     public void signUpForEvent(Volunteer volunteer, Scanner scanner){
         if(DataBase.eventList.isEmpty()){
             System.out.println("There's no event to participate");
@@ -246,7 +247,7 @@ public class VolunteerService {
             }
         }
     }
-
+    //chap nhan don dang ky tham gia su kien cua ng dung khac
     public void confirmParticipation(Scanner scanner, Volunteer volunteer){
         if(volunteer.getYourEvent().isEmpty()) System.out.println("You can't use this function because you are currently hosting no event");
         else{
@@ -282,7 +283,7 @@ public class VolunteerService {
             }
         }
     }
-
+    //tố cáo người dung khác
     public void reportAnotherUser(Scanner scanner,Volunteer volunteerReporter){
         utiles.viewAllUser();
         while(true){
@@ -319,7 +320,7 @@ public class VolunteerService {
         }
 
     }
-
+    // to cao admin
     public void reportAnAdmin(Scanner scanner,Volunteer volunteerReporter){
         utiles.viewAllAdmin();
         while(true){
@@ -354,7 +355,7 @@ public class VolunteerService {
             }
         }
     }
-
+    //xác nhan su kien da dien ra
     public void completeAnEvent(Scanner scanner,Event event){
         System.out.println("Do you confirm the event has finished? Yes/No/Exit");
         String choice ;
@@ -438,7 +439,7 @@ public class VolunteerService {
         DataBase.eventCompleted.add(DataBase.eventList.get(completedEventId)) ;
         DataBase.eventList.remove(completedEventId) ;
     }
-
+    //xem danh sach cac su kien nguoi dung dang to chuc
     public void viewEventsYouCreated(Volunteer volunteer){
         System.out.println("You are hosting " + volunteer.getYourEvent().size() + " events: ");
         int number = 0 ;
@@ -449,7 +450,7 @@ public class VolunteerService {
             System.out.println(number+" - " + event.getEventName()+"     "+event.getEventDate().format(formatter)+"     "+event.getLocation()+"     "+event.getParticipantList().size()+"/"+event.getVolunteerLimit());
         }
     }
-
+    //xem danh sach su kien nguoi dung da tham gia
     public void viewEventsYouParticipated(Volunteer volunteer){
         System.out.println("You have been confirmed to participate in " + volunteer.getPastEvent().size()+ " events: ");
         int number = 0 ;
@@ -459,7 +460,7 @@ public class VolunteerService {
             System.out.println(number+" - " + event.getEventName()+"     "+event.getEventDate().format(formatter)+"     "+event.getLocation()+"     "+event.getMinimumAge()+"+");
         }
     }
-
+// huy tham gia 1 su kien
     public void cancelParticipation(Volunteer volunteer, Event event){
         int number = 0 ;
         for(Volunteer participant:event.getParticipantList()){
@@ -479,7 +480,7 @@ public class VolunteerService {
             number++ ;
         }
     }
-
+    //huy to chuc 1 su kien
     public void cancelAnEvent(Scanner scanner, Event event){
         System.out.println("Do you confirm to cancel this event? Yes/No/Exit");
         String choice ;
@@ -532,6 +533,7 @@ public class VolunteerService {
         DataBase.eventList.remove(cancelledEventId) ;
     }
 
+    //xem thong tin ve tai khoan
     public void viewAccountInformation(Volunteer volunteer){
         System.out.println("User: " + volunteer.getUsername());
         System.out.println("Age: " + volunteer.getAge());
@@ -552,6 +554,7 @@ public class VolunteerService {
         }
     }
 
+    //xem danh sach cac su kien nguoi dung dang ky tham gia
     public void viewEventYouAreJoining(Volunteer volunteer){
         System.out.println("\nYou are currently participating in " + volunteer.getCurrentEvent().size() + " events: ");
         for(int i = 0 ; i < volunteer.getCurrentEvent().size();i++){
@@ -559,7 +562,7 @@ public class VolunteerService {
             utiles.printEvent(event);
         }
     }
-
+    //xem danh sach cac su kien (ma nguoi dung to chuc) da hoan thanh
     public void viewYourEventCompleted(Volunteer volunteer){
         System.out.println("You have hosted and completed " + volunteer.getPastEventCompleted().size()+ " events:");
         for(int i = 0 ; i < volunteer.getPastEventCompleted().size() ; i++){

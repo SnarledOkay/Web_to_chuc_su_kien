@@ -45,7 +45,7 @@ public class AdminService {
 
     Utiles utiles = new Utiles() ;
     private VolunteerService volunteerService ;
-
+    //chap nhan yeu cau tao tai khoan moi
     public void checkPendingAccount(Scanner scanner)    {
         if(DataBase.pendingAccountList.isEmpty()){
             System.out.println("There's no request pending");
@@ -90,7 +90,7 @@ public class AdminService {
             System.out.println("There's no more request pending");
         }
     }
-
+    //chap nhan yeu cau tao su kien moi
     public void checkPendingEvent(Scanner scanner){
         if(DataBase.pendingEventList.isEmpty()) System.out.println("No request pending");
         else{
@@ -152,7 +152,7 @@ public class AdminService {
         }
         if(DataBase.pendingEventList.isEmpty()) System.out.println("There's no more request pending");
     }
-
+    //chon ly do tu choi 1 su kien
     public void displayReasonForRejectionEvent(){
         System.out.println("Choose why event is rejected: ");
         System.out.println("1 - Suspected of trolling");
@@ -162,7 +162,7 @@ public class AdminService {
         System.out.println("5 - Event deemed as dangerous/risky");
         System.out.println("6 - Spamming behaviour detected");
     }
-
+    //bien 1 nguoi dung thanh admin
     public void assignUserAsAdmin(Scanner scanner){
         utiles.viewAllUser();
         System.out.println("Choose user to assign as admin: ");
@@ -178,7 +178,7 @@ public class AdminService {
             DataBase.adminList.add(volunteer) ;
         }
     }
-
+    //gui canh cao toi nguoi dung
     public void sendWarningToUser(Scanner scanner){
         utiles.viewAllUser();
         int option=1 ;
@@ -211,7 +211,7 @@ public class AdminService {
 
 
     }
-
+    //xem xet cac don to cao tu nguoi dung
     public void checkReportFromUser(Scanner scanner){
         if(DataBase.pendingReport.isEmpty()){
             System.out.println("There's no report from user currently");
@@ -272,7 +272,7 @@ public class AdminService {
         System.out.println("There's no more report from any user");
         System.out.println("Returning to main menu...");
     }
-
+    //canh cao admin
     public void sendWarningToAdmin(Scanner scanner){
         if(DataBase.adminList.size()==1) System.out.println("There's no admin to send warning to");
         else{
@@ -312,7 +312,7 @@ public class AdminService {
             }
         }
     }
-
+    //xem xet don to cao toi admin
     public void checkReportTowardAdmin(Scanner scanner){
         if(DataBase.pendingAdminReport.isEmpty()){
             System.out.println("There's no report toward Admins currently");

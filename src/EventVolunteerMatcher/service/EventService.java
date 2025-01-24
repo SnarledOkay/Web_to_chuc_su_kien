@@ -11,7 +11,7 @@ import java.util.*;
 
 public class EventService {
     Utiles utiles = new Utiles() ;
-
+    //xem danh sach tat ca su kien dg dien ra
     public void viewAllEvent(){
         if(DataBase.eventList.isEmpty()){
             System.out.println("There's currently no event happening");
@@ -20,12 +20,13 @@ public class EventService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
             System.out.println("ID    Name       Date        Location        Category        Age Requirement        Volunteers needed");
             for(Event events:DataBase.eventList){
-                ArrayList<Volunteer> participants = events.getParticipantList() ;
-                System.out.println(events.getId()+". " + events.getEventName()+"     "+events.getEventDate().format(formatter)+"     "+events.getLocation()+"     "+events.getTypeOfVolunteerWork()+"     "+events.getMinimumAge()+"+"+"     "+participants.size()+"/"+events.getVolunteerLimit());
+                //ArrayList<Volunteer> participants = events.getParticipantList() ;
+                //System.out.println(events.getId()+". " + events.getEventName()+"     "+events.getEventDate().format(formatter)+"     "+events.getLocation()+"     "+events.getTypeOfVolunteerWork()+"     "+events.getMinimumAge()+"+"+"     "+participants.size()+"/"+events.getVolunteerLimit());
+                utiles.printEvent(events);
             }
         }
     }
-
+    //tao su kien moi
     public Event createNewEvent(Scanner scanner, Volunteer volunteer){
         System.out.println("Enter information of event (enter 'exit' to escape)");
         System.out.print("Enter name of event: ");
@@ -126,7 +127,7 @@ public class EventService {
         else System.out.println("Your request to create this event has been sent to Admin");
         return new Event(DataBase.eventList.size()+1,eventName,eventDate,location,chooseCategory,minAge,volunteer,co_organizerList,volunteerLimit,volunteer.getPhoneNumber(),volunteer.getGmail(),participantList) ;
     }
-
+    //tim kiem theo dia diem
     public void searchEventByLocation(String location){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
         int number = 0 ;
@@ -143,7 +144,7 @@ public class EventService {
         }
         DataBase.eventSatisfyCondition.clear();
     }
-
+    //tim kiem theo ngay dien ra (dien ra sau ngay nao do)
     public void searchEventByDate(LocalDate dateEvent){
         int number = 0 ;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
@@ -160,7 +161,7 @@ public class EventService {
         }
         DataBase.eventSatisfyCondition.clear();
     }
-
+    //tim kiem theo phan loai su kien
     public void searchEventByCategory(int option){
         int number = 0 ;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
@@ -177,7 +178,7 @@ public class EventService {
             System.out.println(event.getId()+". " + event.getEventName() + "     "+event.getEventDate().format(formatter)+ "     " + event.getLocation()+"     "+event.getMinimumAge()+"+"+"     "+event.getParticipantList().size()+"/"+ event.getVolunteerLimit());
         }
     }
-
+    //tim kiem theo dia diem + ngay dien ra
     public void searchEventLocationDate(String location, LocalDate dateEvent){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
         int number = 0 ;
@@ -195,7 +196,7 @@ public class EventService {
         }
         DataBase.eventSatisfyCondition.clear();
     }
-
+    //tim kiem theo dia diem + phan loai
     public void searchEventLocationCategory(String location, int volunteerCategory){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
         int number = 0 ;
@@ -212,7 +213,7 @@ public class EventService {
         }
         DataBase.eventSatisfyCondition.clear();
     }
-
+    //tim kiem theo ngay dien ra + phan loai
     public void searchEventDateCategory(LocalDate dateEvent, int eventCategory){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
         int number = 0 ;
@@ -230,7 +231,7 @@ public class EventService {
         }
         DataBase.eventSatisfyCondition.clear();
     }
-
+    //tim kiem theo ca 3 phan loai
     public void searchEventLocationDateCategory(String location, LocalDate dateEvent , int eventCategory){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
         int number = 0 ;
@@ -248,7 +249,7 @@ public class EventService {
         }
         DataBase.eventSatisfyCondition.clear();
     }
-
+    //sap xep tat ca su kien theo dia diem
     public void sortEventByLocation(){
         ArrayList<Event> allEvent = DataBase.eventList ;
         allEvent.sort(Comparator.comparing(Event::getLocation));
@@ -259,7 +260,7 @@ public class EventService {
             utiles.printEvent(event);
         }
     }
-
+    //sap xep tât ca su kien theo ngay dien ra
     public void sortEventByDate(){
         ArrayList<Event> allEvent = DataBase.eventList ;
         allEvent.sort(Comparator.comparing(Event::getEventDate));
@@ -267,7 +268,7 @@ public class EventService {
             utiles.printEvent(event);
         }
     }
-
+    //sap xep tat ca su kien theo yeu cau về tuoi
     public void sortEventByAge(){
         ArrayList<Event> allEvent = DataBase.eventList ;
         allEvent.sort(Comparator.comparing(Event::getMinimumAge));
@@ -275,7 +276,7 @@ public class EventService {
             utiles.printEvent(event);
         }
     }
-
+    //sap xep tat ca su kien theo so slot còn lai
     public void sortEventByAvailability(){
         ArrayList<Event> allEvent = DataBase.eventList ;
         allEvent.sort(Comparator.comparing(Event::getDifference));
@@ -284,6 +285,7 @@ public class EventService {
         }
     }
 
+    //man hinh thay doi thong tin ve su kien
     public void displayChangeEventInformation(){
         System.out.println("1 - Change event name");
         System.out.println("2 - Change date of event");
@@ -294,6 +296,7 @@ public class EventService {
         System.out.println("7 - Save information");
     }
 
+    //chon thay doi thong tin ve su kien
     public void chooseChangeEventInformation(Event event, Scanner scanner, int choice){
         switch (choice){
             case 1:

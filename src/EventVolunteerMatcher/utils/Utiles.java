@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Utiles {
+    //kiem tra neu username bi trung
     public boolean checkUserNameExist(String username){
         for(Volunteer volunteer:DataBase.volunteerList){
             if(username.equals(volunteer.getUsername())){
@@ -23,7 +24,7 @@ public class Utiles {
         }
         return false ;
     }
-
+    //kiem tra neu so dien thoai bi trung
     public boolean checkTelephoneNumberExist(String telephoneNumber){
         for (Volunteer volunteer:DataBase.volunteerList){
             if(telephoneNumber.equals(volunteer.getPhoneNumber())){
@@ -37,7 +38,7 @@ public class Utiles {
         }
         return false ;
     }
-
+    //kiem tra neu gmail bi trung
     public boolean checkGmailExist(String gmail){
         for(Volunteer volunteer:DataBase.volunteerList){
             if(gmail.equals(volunteer.getGmail())){
@@ -51,7 +52,7 @@ public class Utiles {
         }
         return false ;
     }
-
+    //tim kiem nguoi dung theo username
     public Volunteer findVolunteerByUsername(String username){
         for(Volunteer volunteer:DataBase.volunteerList){
             if(username.equals(volunteer.getUsername())){
@@ -60,7 +61,7 @@ public class Utiles {
         }
         return null ;
     }
-
+    //kiem tra tinh hop ly cua so dien thoai
     public boolean checkTelephoneNumberValidity(String telephoneNumber){
         char firstNumber = telephoneNumber.charAt(0) ;
         if(firstNumber != '0' || telephoneNumber.length() != 10) return false ;
@@ -69,11 +70,11 @@ public class Utiles {
         }
         return true ;
     }
-
+    //kiem tra mat khau
     public boolean checkPasswordTrue(String password, Volunteer volunteer){
         return password.equals(volunteer.getPassword());
     }
-
+    //kiem tra tinh hop ly cua mat khau
     public boolean checkPasswordValidity(String password){
         if(password.length() < 8 || password.length() > 14) return false ;
         for(int i = 0 ; i < password.length() ; i++){
@@ -81,7 +82,7 @@ public class Utiles {
         }
         return false ;
     }
-
+    //kiem tra tinh hop ly cua ID code (dc dung de thay doi mat khau)
     public boolean checkIDCodeValidity(String IDcode){
         int number = 0;
         if(IDcode.length() != 6) return false ;
@@ -92,7 +93,7 @@ public class Utiles {
         }
         return number == 3;
     }
-
+    //chon ngay thang
     public LocalDate setDateForEvent(Scanner scanner){
         System.out.println("Enter date of event (you can't stop during this process): ");
         int day=0 , month=0 , year=0 ;
@@ -187,20 +188,20 @@ public class Utiles {
         System.out.println("Successful! Date of event has been set to "+day+"/"+month+"/"+year);
         return LocalDate.of(year,month,day);
     }
-
+    //in ra cac dieu luat cua chuong trinh
     public void displayCommunityGuideline(){
         System.out.println("1 - No trolling: Don't pretend to join any event");
         System.out.println("2 - No harassment: Use inclusive language");
         System.out.println("3 - Be honest: Displayed information must be correct (You can be suspended\nif you spread misinformation)");
     }
-
+    //kiem tra neu username bi trung trong danh sach nguoi dung chua dc dang ky
     public boolean checkUsernameExistPending(String username){
         for(Volunteer volunteer:DataBase.pendingAccountList){
             if(username.equals(volunteer.getUsername())) return true ;
         }
         return false ;
     }
-
+    //in ra danh sach phan loai su kien
     public void displayTypeOfVolunteer(){
         System.out.println("Choose the category of your event: ");
         for(int i = 1 ; i < DataBase.volunteerWorkList.size();i++){
@@ -208,7 +209,7 @@ public class Utiles {
         }
         System.out.println(DataBase.volunteerWorkList.size()+". " + DataBase.volunteerWorkList.get(0));
     }
-
+    //in ra danh sach nguoi dung
     public void viewAllUser(){
         System.out.println("List of all users:");
         int number = 0 ;
@@ -219,7 +220,7 @@ public class Utiles {
             }
         }
     }
-
+    //in ra danh sach admin
     public void viewAllAdmin(){
         System.out.println("List of all admins:");
 //        int number = 0 ;
@@ -228,20 +229,20 @@ public class Utiles {
             System.out.println(i+" - " + admin.getUsername()+"     "+admin.getAge()+"     "+admin.getGmail()+"     "+admin.getPhoneNumber());
         }
     }
-
+    //in ra danh sach canh cao
     public void viewWarning(){
         for(int i = 0 ; i < DataBase.warningToUser.size() ; i++){
             System.out.println(i + "- " + DataBase.warningToUser.get(i));
         }
     }
-
+    //in ra danh sach cac dia diem to chuc
     public void viewLocation(){
         System.out.println("Choose your location:");
         for(int i = 1 ; i < DataBase.locationList.size();i++){
             System.out.println(i+" - " + DataBase.locationList.get(i));
         }
     }
-
+    //nhap integer vao (dung try-catch de k bi loi NumberFormatException)
     public int enterInteger(Scanner scanner){
         DataBase.inputValidity = false ;
         int option=0 ;
@@ -256,7 +257,7 @@ public class Utiles {
         }
         return option ;
     }
-
+    //in ra thong tin ve su kien
     public void printEvent(Event event){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
         System.out.println(event.getId() + " - " + event.getEventName()+"     "+event.getEventDate().format(formatter)+"     "+event.getLocation()+"     "+event.getMinimumAge()+"+" + "     "+event.getParticipantList().size()+"/"+event.getVolunteerLimit());
