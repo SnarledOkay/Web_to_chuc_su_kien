@@ -33,6 +33,9 @@ public class Event {
         this.participantList = participantList;
     }
 
+    public int getDifference(){
+        return volunteerLimit - participantList.size() ;
+    }
     public ArrayList<Volunteer> getParticipantList() {
         return participantList;
     }

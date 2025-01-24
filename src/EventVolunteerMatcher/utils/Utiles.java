@@ -1,6 +1,7 @@
 package EventVolunteerMatcher.utils;
 
 import EventVolunteerMatcher.data.DataBase;
+import EventVolunteerMatcher.entities.Event;
 import EventVolunteerMatcher.entities.Volunteer;
 
 import javax.xml.crypto.Data;
@@ -15,6 +16,11 @@ public class Utiles {
                 return true ;
             }
         }
+        for(Volunteer volunteer:DataBase.pendingAccountList){
+            if(username.equals(volunteer.getUsername())){
+                return true ;
+            }
+        }
         return false ;
     }
 
@@ -24,11 +30,21 @@ public class Utiles {
                 return true ;
             }
         }
+        for(Volunteer volunteer:DataBase.pendingAccountList){
+            if(telephoneNumber.equals(volunteer.getPhoneNumber())){
+                return true ;
+            }
+        }
         return false ;
     }
 
     public boolean checkGmailExist(String gmail){
         for(Volunteer volunteer:DataBase.volunteerList){
+            if(gmail.equals(volunteer.getGmail())){
+                return true ;
+            }
+        }
+        for(Volunteer volunteer:DataBase.pendingAccountList){
             if(gmail.equals(volunteer.getGmail())){
                 return true ;
             }
@@ -91,30 +107,11 @@ public class Utiles {
             System.out.println("1 - Set day");
             System.out.println("2 - Set month");
             System.out.println("3 - Set year");
-            int choice =1;
-            DataBase.inputValidity = false;
-            while(!DataBase.inputValidity){
-                try{
-                    choice = Integer.parseInt(scanner.nextLine()) ;
-                    DataBase.inputValidity = true ;
-                }
-                catch (NumberFormatException e){
-                    System.out.println("Invalid input, please enter again");
-                }
-            }
+            int choice = enterInteger(scanner) ;
             switch (choice){
                 case 1:
                     System.out.print("Enter day (invalid date will automatically be set to the last day of the month): ");
-                    DataBase.inputValidity = false ;
-                    while(!DataBase.inputValidity){
-                        try{
-                            day = Integer.parseInt(scanner.nextLine()) ;
-                            DataBase.inputValidity = true ;
-                        }
-                        catch (NumberFormatException e){
-                            System.out.println("Invalid input, please enter again");
-                        }
-                    }
+                    day = enterInteger(scanner) ;
                     break ;
                 case 2:
                     System.out.print("Enter month: ");
@@ -127,6 +124,7 @@ public class Utiles {
                             }
                             catch (NumberFormatException e){
                                 System.out.println("Invalid input, please enter again");
+                                System.out.print("Enter month: ");
                             }
                         }
                         if(month > 12 || month < 0){
@@ -149,11 +147,12 @@ public class Utiles {
                             }
                             catch (NumberFormatException e){
                                 System.out.println("Invalid input, please enter again");
+                                System.out.print("Enter year: ");
                             }
                         }
-                        if(year > DataBase.currentYear+5) System.out.println("Are you sure your event will happen this year?");
+                        if(year > DataBase.currentYear+5) System.out.println("Are you sure to choose this year?");
                         else if(year < DataBase.currentYear){
-                            System.out.println("You can't organize an event in the past");
+                            System.out.println("You can't set a date in the past");
                             System.out.print("Enter year: ");
                             choose = false ;
                         }
@@ -161,8 +160,7 @@ public class Utiles {
                     while(!choose) ;
                     break ;
             }
-            if(day>DataBase.harborVariable && month>DataBase.harborVariable && year>DataBase.harborVariable){
-//                LocalDate dateEvent = LocalDate.of(year,month,day) ;
+            if(day>DataBase.harborVariable && month>DataBase.harborVariable && year>DataBase.harborVariable){;
                 if(month == 2){
                     if(year % 4 == 0 && year % 100 != 0){
                         if(day > 29) day = 29 ;
@@ -180,8 +178,9 @@ public class Utiles {
                     }
                 }
                 System.out.print("Date has been set to " + day+"/"+month+"/"+year + "\n");
-                System.out.println("Do you want to save the current date? Y/N");
+                System.out.println("Do you want to set to this date? Y/N");
                 String choosing = scanner.nextLine() ;
+                choosing = choosing.trim() ;
                 if(choosing.equalsIgnoreCase("Y")) break ;
             }
         }
@@ -235,4 +234,32 @@ public class Utiles {
             System.out.println(i + "- " + DataBase.warningToUser.get(i));
         }
     }
+
+    public void viewLocation(){
+        System.out.println("Choose your location:");
+        for(int i = 1 ; i < DataBase.locationList.size();i++){
+            System.out.println(i+" - " + DataBase.locationList.get(i));
+        }
+    }
+
+    public int enterInteger(Scanner scanner){
+        DataBase.inputValidity = false ;
+        int option=0 ;
+        while(!DataBase.inputValidity){
+            try{
+                option = Integer.parseInt(scanner.nextLine()) ;
+                DataBase.inputValidity = true ;
+            }
+            catch (NumberFormatException e){
+                System.out.println("Invalid input, please enter again");
+            }
+        }
+        return option ;
+    }
+
+    public void printEvent(Event event){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
+        System.out.println(event.getId() + " - " + event.getEventName()+"     "+event.getEventDate().format(formatter)+"     "+event.getLocation()+"     "+event.getMinimumAge()+"+" + "     "+event.getParticipantList().size()+"/"+event.getVolunteerLimit());
+    }
+
 }

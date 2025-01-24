@@ -7,7 +7,6 @@ import EventVolunteerMatcher.entities.Volunteer;
 import EventVolunteerMatcher.utils.Utiles;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -47,44 +46,48 @@ public class AdminService {
     Utiles utiles = new Utiles() ;
     private VolunteerService volunteerService ;
 
-    public void checkPendingAccount(Scanner scanner){
+    public void checkPendingAccount(Scanner scanner)    {
         if(DataBase.pendingAccountList.isEmpty()){
             System.out.println("There's no request pending");
             return;
         }
         else{
-            System.out.println("Accounts requesting to be activated:");
+            System.out.println();
             while(!DataBase.pendingAccountList.isEmpty()){
+                System.out.println("There are " + DataBase.pendingAccountList.size() + " requests of account activation left");
                 Volunteer currentAccount = DataBase.pendingAccountList.get(0) ;
-                System.out.println("Username: " + currentAccount.getUsername());
+                System.out.println("New account requested by: " + currentAccount.getUsername());
                 System.out.println("Age: " + currentAccount.getAge());
                 System.out.println("Location: " + currentAccount.getCurrentLocation());
                 System.out.println("Email: " + currentAccount.getGmail());
-                System.out.println("\nDo you approve of activating this account?  Yes/No");
+                System.out.println("\nDo you approve of activating this account?  Yes/No/Exit");
                 String confirm ;
-                do{
+                while(true){
                     confirm = scanner.nextLine() ;
-                    if(confirm.equalsIgnoreCase("stop")){
-                        System.out.println("Returning to main menu...");
+                    confirm = confirm.trim() ;
+                    if(confirm.equalsIgnoreCase("exit")){
+                        System.out.println("Process terminated");
+//                        System.out.println("Returning to main menu...\n");
                         return ;
                     }
                     if(confirm.equalsIgnoreCase("yes")){
-                        System.out.println("Account activated");
+                        System.out.println("Account activated\n");
                         currentAccount.getProgramNotification().add("Your account has been created successfully!") ;
                         DataBase.volunteerList.add(currentAccount) ;
                         DataBase.pendingAccountList.remove(0) ;
+                        break;
                     }
                     else if(confirm.equalsIgnoreCase("no")){
-                        System.out.println("Account rejected");
+                        System.out.println("Account rejected\n");
                         DataBase.pendingAccountList.remove(0) ;
+                        break;
                     }
                     else{
                         System.out.println("Invalid choice, please enter again: ");
                     }
                 }
-                while (!confirm.equalsIgnoreCase("yes") && !confirm.equalsIgnoreCase("no")) ;
             }
-            if(DataBase.pendingAccountList.isEmpty()) System.out.println("There's no more request pending");
+            System.out.println("There's no more request pending");
         }
     }
 
@@ -93,24 +96,34 @@ public class AdminService {
         else{
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
             while (!DataBase.pendingEventList.isEmpty()){
+                System.out.println("There's " + DataBase.pendingEventList.size() + " requests left\n");
                 Event event = DataBase.pendingEventList.get(0) ;
+                System.out.println("Event requested by " + event.getMainOrganizer().getUsername()+":");
                 System.out.println("Name: " + event.getEventName());
                 System.out.println("Location: " + event.getLocation());
                 System.out.println("Date: " + event.getEventDate().format(formatter));
                 System.out.println("Work involved: " + event.getTypeOfVolunteerWork());
                 System.out.println("Age requirement: " + event.getMinimumAge()+"+");
                 System.out.println("Number of volunteer needed: " + event.getVolunteerLimit() + "\n") ;
-                System.out.println("Do you approve of this event? Yes/No");
+                System.out.println("Do you approve of this event? Yes/No/Exit");
                 String choice ;
+                boolean checker = false ;
                 Volunteer volunteer = event.getMainOrganizer() ;
-                do{
+                while(true){
                     choice = scanner.nextLine() ;
-                    if(choice.equalsIgnoreCase("yes")){
-                        System.out.println("Request approved");
+                    choice = choice.trim() ;
+                    if(choice.equalsIgnoreCase("exit")){
+                        checker = true ;
+                        break;
+                    }
+                    else if(choice.equalsIgnoreCase("yes")){
+                        System.out.println("Request approved\n");
                         volunteer.getYourEventAccepted().add(event) ;
                         volunteer.getRequestAccepted().add(event) ;
+                        volunteer.getYourEvent().add(event) ;
                         DataBase.eventList.add(event) ;
                         DataBase.pendingEventList.remove(0) ;
+                        break;
                     }
                     else if(choice.equalsIgnoreCase("no")){
                         System.out.println("Request rejected");
@@ -118,38 +131,26 @@ public class AdminService {
                         int option=1 ;
                         do{
                             System.out.println("Add reason for rejection: ");
-                            DataBase.inputValidity = false ;
-                            while (!DataBase.inputValidity){
-                                try{
-                                    option = Integer.parseInt(scanner.nextLine()) ;
-                                    DataBase.inputValidity = true ;
-                                }
-                                catch (NumberFormatException e){
-                                    System.out.println("Invalid input, please enter again");
-                                }
-                            }
+                            option = utiles.enterInteger(scanner);
                             if(option >= DataBase.rejectEventReason.size() || option < 1) System.out.print("Invalid choice, please choose again: ");
                         }
                         while(option < 1 && option >= DataBase.rejectEventReason.size()) ;
                         volunteer.getYourEventRejected().add(event) ;
                         volunteer.getReasonForRejection().add(option) ;
                         DataBase.pendingEventList.remove(0) ;
+                        break;
                     }
                     else{
                         System.out.println("Invalid choice, please enter again");
                     }
                 }
-                while (!choice.equalsIgnoreCase("yes") && !choice.equalsIgnoreCase("no")) ;
+                if(checker){
+                    System.out.println("Process terminated");
+                    return;
+                }
             }
         }
         if(DataBase.pendingEventList.isEmpty()) System.out.println("There's no more request pending");
-    }
-
-    public void enterNewCategory(Scanner scanner){
-        System.out.println("Enter new category: ");
-        String category = scanner.nextLine() ;
-        DataBase.pendingCategoryList.add(category) ;
-        System.out.println("Your request to add new category has been\nsent and will be approved when\nat least 3 admins approve");
     }
 
     public void displayReasonForRejectionEvent(){
@@ -167,16 +168,7 @@ public class AdminService {
         System.out.println("Choose user to assign as admin: ");
         System.out.println("You can only assign 1 person as user once at a time");
         DataBase.inputValidity = false ;
-        int userChoice = 1 ;
-        while(!DataBase.inputValidity){
-            try{
-                userChoice = Integer.parseInt(scanner.nextLine()) ;
-                DataBase.inputValidity = true ;
-            }
-            catch (NumberFormatException e){
-                System.out.println("Invalid input, please enter again");
-            }
-        }
+        int userChoice = utiles.enterInteger(scanner);
         if(userChoice < 0 || userChoice > DataBase.volunteerList.size()) System.out.println("No user has been assigned as admin");
         else{
             Volunteer volunteer = DataBase.volunteerList.get(userChoice-1) ;
@@ -192,16 +184,7 @@ public class AdminService {
         int option=1 ;
         while(true){
             System.out.print("Choose user to send warning to (enter '0' to escape): ");
-            DataBase.inputValidity = false ;
-            while(!DataBase.inputValidity){
-                try{
-                    option = Integer.parseInt(scanner.nextLine()) ;
-                    DataBase.inputValidity = true ;
-                }
-                catch (NumberFormatException e){
-                    System.out.println("Invalid input, please enter again");
-                }
-            }
+            option = utiles.enterInteger(scanner);
             if(option == 0){
                 System.out.println("Returning to admin menu...");
                 break;
@@ -215,17 +198,7 @@ public class AdminService {
                 else{
                     utiles.viewWarning();
                     System.out.print("Choose reason for warning: ");
-                    int reason = 1 ;
-                    DataBase.inputValidity = false ;
-                    while(!DataBase.inputValidity){
-                        try{
-                            reason = Integer.parseInt(scanner.nextLine()) ;
-                            DataBase.inputValidity = true ;
-                        }
-                        catch (NumberFormatException e){
-                            System.out.println("Invalid input, please enter again");
-                        }
-                    }
+                    int reason = utiles.enterInteger(scanner);
                     if(reason < 0 || reason >= DataBase.warningToUser.size()) reason = 0 ;
                     System.out.println("Warning sent");
                     volunteer.getViolation().add(DataBase.warningToUser.get(reason)) ;
@@ -257,6 +230,7 @@ public class AdminService {
             String choice ;
             while (true){
                 choice = scanner.nextLine() ;
+                choice = choice.trim() ;
                 if(choice.equalsIgnoreCase("yes")){
                     System.out.println("A warning has been sent to the user");
                     allegedViolator.setJustReceiveWarning(true);
@@ -265,44 +239,41 @@ public class AdminService {
                 }
                 else if(choice.equalsIgnoreCase("no")){
                     System.out.println("The report has been turned down");
-                    System.out.println("Do you want to send a warning to the reporter? Enter 'Yes' to confirm");
+                    System.out.println("Do you want to send a warning to the reporter? Yes/No");
                     String option ;
                     while (true){
                         option = scanner.nextLine() ;
+                        option = option.trim() ;
                         if(option.equalsIgnoreCase("yes")){
                             System.out.println("A warning has been sent to the user");
                             reporter.setJustReceiveWarning(true);
                             reporter.getViolation().add("Suspected of false report") ;
                             break;
                         }
-                        else if(option.equalsIgnoreCase("stop")){
-                            System.out.println("Returning to admin menu...");
-                            break;
-                        }
-                        else{
+                        else if(option.equalsIgnoreCase("no")){
                             System.out.println("No warning will be sent");
                             break;
                         }
-                    }
-                    if(option.equalsIgnoreCase("stop")){
-                        choice = "stop" ;
-                        break;
+                        else{
+                            System.out.println("Invalid choice, please enter again");
+                        }
                     }
                     break;
                 }
-                else if(choice.equalsIgnoreCase("stop")) break;
+                else if(choice.equalsIgnoreCase("stop")) {
+                    System.out.println("Process terminated");
+                    System.out.println("Returning to main menu...");
+                    return;
+                }
                 else System.out.println("Invalid choice, please enter again");
             }
-            if(choice.equalsIgnoreCase("stop")) break ;
             DataBase.pendingReport.remove(0) ;
         }
-        if(DataBase.pendingReport.isEmpty()){
-            System.out.println("There's no more report from any user");
-        }
+        System.out.println("There's no more report from any user");
         System.out.println("Returning to main menu...");
     }
 
-    public void sendWarningtoAdmin(Scanner scanner){
+    public void sendWarningToAdmin(Scanner scanner){
         if(DataBase.adminList.size()==1) System.out.println("There's no admin to send warning to");
         else{
             System.out.println("List of admins: ");
@@ -312,16 +283,7 @@ public class AdminService {
             }
             DataBase.inputValidity = false ;
             System.out.println("Choose admin you want to send warning to (enter '-1' to escape): ");
-            int chooseAdmin = 1 ;
-            while(!DataBase.inputValidity){
-                try{
-                    chooseAdmin = Integer.parseInt(scanner.nextLine()) ;
-                    DataBase.inputValidity = true ;
-                }
-                catch (NumberFormatException e){
-                    System.out.println("Invalid input, please enter again");
-                }
-            }
+            int chooseAdmin = utiles.enterInteger(scanner) ;
             if(chooseAdmin==-1){
                 System.out.println("Cancelling the action...");
                 System.out.println("Returning to main menu...");
@@ -330,31 +292,21 @@ public class AdminService {
             System.out.println("Select reason for warning (enter '-1' to escape): ");
             utiles.viewWarning();
             while(true){
-                DataBase.inputValidity = false ;
-                int chooseReason = 0 ;
-                while(!DataBase.inputValidity){
-                    try{
-                        chooseReason = Integer.parseInt(scanner.nextLine()) ;
-                        DataBase.inputValidity = true ;
-                    }
-                    catch (NumberFormatException e){
-                        System.out.println("Invalid input, please enter again");
-                    }
-                    if(chooseReason==-1){
-                        System.out.println("Action cancelled");
-                        System.out.println("Returning to admin menu...");
-                        return;
-                    }
-                    else if(chooseReason <= 0 || chooseReason>= DataBase.warningToUser.size()){
-                        System.out.println("Invalid choice, please enter again");
-                    }
-                    else{
-                        System.out.println("Warning has been sent to admin");
-                        Volunteer admin = DataBase.adminList.get(chooseAdmin) ;
-                        admin.setJustReceiveWarning(true);
-                        admin.getViolation().add(DataBase.warningToUser.get(chooseReason)) ;
-                        break;
-                    }
+                int chooseReason = utiles.enterInteger(scanner);
+                if(chooseReason==-1){
+                    System.out.println("Action cancelled");
+                    System.out.println("Returning to admin menu...");
+                    return;
+                }
+                else if(chooseReason <= 0 || chooseReason>= DataBase.warningToUser.size()){
+                    System.out.println("Invalid choice, please enter again");
+                }
+                else{
+                    System.out.println("Warning has been sent to admin");
+                    Volunteer admin = DataBase.adminList.get(chooseAdmin) ;
+                    admin.setJustReceiveWarning(true);
+                    admin.getViolation().add(DataBase.warningToUser.get(chooseReason)) ;
+                    break;
                 }
                 if(chooseReason >= 0 && chooseReason < DataBase.warningToUser.size()) break ;
             }
@@ -379,8 +331,10 @@ public class AdminService {
             String choice ;
             while (true){
                 choice = scanner.nextLine() ;
+                choice = choice.trim() ;
                 if(choice.equalsIgnoreCase("yes")){
                     System.out.println("A warning has been sent to the admin");
+                    reporter.getProgramNotification().add("The admin you reported has received a warning");
                     allegedViolator.setJustReceiveWarning(true);
                     allegedViolator.getViolation().add(DataBase.warningToUser.get(reason)) ;
                     break;
@@ -391,6 +345,7 @@ public class AdminService {
                     String option ;
                     while (true){
                         option = scanner.nextLine() ;
+                        option = option.trim() ;
                         if(option.equalsIgnoreCase("yes")){
                             System.out.println("A warning has been sent to the user");
                             reporter.setJustReceiveWarning(true);

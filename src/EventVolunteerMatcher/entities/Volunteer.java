@@ -9,8 +9,10 @@ public class Volunteer {
     private String gmail ;
     private String username ;
     private String password ;
-    private ArrayList<Event> pastEvent ;
     private ArrayList<Event> yourEvent ;
+    private ArrayList<Event> currentEvent ;
+    private ArrayList<Event> pastEvent ;
+    private ArrayList<Event> pastEventCompleted ;
     private ArrayList<Event> requestAccepted ;
     private ArrayList<Event> requestRejected ;
     private ArrayList<Pair<Volunteer,Event>> pendingRequest ;
@@ -23,69 +25,17 @@ public class Volunteer {
     private boolean justReceiveWarning ;
     private ArrayList<String> programNotification ;
 
-//    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> pastEvent, ArrayList<Event> yourEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Integer> reasonForRejection) {
-//        this.age = age;
-//        this.phoneNumber = phoneNumber;
-//        this.currentLocation = currentLocation;
-//        this.gmail = gmail;
-//        this.username = username;
-//        this.password = password;
-//        this.pastEvent = pastEvent;
-//        this.yourEvent = yourEvent;
-//        this.requestAccepted = requestAccepted;
-//        this.requestRejected = requestRejected;
-//        this.pendingRequest = pendingRequest;
-//        this.isAdmin = isAdmin;
-//        this.secretIdentification = secretIdentification;
-//        this.reasonForRejection = reasonForRejection;
-//    }
-
-/*    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> pastEvent, ArrayList<Event> yourEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection) {
+    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> yourEvent, ArrayList<Event> currentEvent, ArrayList<Event> pastEvent, ArrayList<Event> pastEventCompleted, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection, ArrayList<Event> yourEventAccepted, ArrayList<String> violation, boolean justReceiveWarning, ArrayList<String> programNotification) {
         this.age = age;
         this.phoneNumber = phoneNumber;
         this.currentLocation = currentLocation;
         this.gmail = gmail;
         this.username = username;
         this.password = password;
-        this.pastEvent = pastEvent;
         this.yourEvent = yourEvent;
-        this.requestAccepted = requestAccepted;
-        this.requestRejected = requestRejected;
-        this.pendingRequest = pendingRequest;
-        this.isAdmin = isAdmin;
-        this.secretIdentification = secretIdentification;
-        this.yourEventRejected = yourEventRejected;
-        this.reasonForRejection = reasonForRejection;
-    }*/
-
-//    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> pastEvent, ArrayList<Event> yourEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection, ArrayList<Event> yourEventAccepted) {
-//        this.age = age;
-//        this.phoneNumber = phoneNumber;
-//        this.currentLocation = currentLocation;
-//        this.gmail = gmail;
-//        this.username = username;
-//        this.password = password;
-//        this.pastEvent = pastEvent;
-//        this.yourEvent = yourEvent;
-//        this.requestAccepted = requestAccepted;
-//        this.requestRejected = requestRejected;
-//        this.pendingRequest = pendingRequest;
-//        this.isAdmin = isAdmin;
-//        this.secretIdentification = secretIdentification;
-//        this.yourEventRejected = yourEventRejected;
-//        this.reasonForRejection = reasonForRejection;
-//        this.yourEventAccepted = yourEventAccepted;
-//    }
-
-    /*public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> pastEvent, ArrayList<Event> yourEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection, ArrayList<Event> yourEventAccepted, ArrayList<String> violation) {
-        this.age = age;
-        this.phoneNumber = phoneNumber;
-        this.currentLocation = currentLocation;
-        this.gmail = gmail;
-        this.username = username;
-        this.password = password;
+        this.currentEvent = currentEvent;
         this.pastEvent = pastEvent;
-        this.yourEvent = yourEvent;
+        this.pastEventCompleted = pastEventCompleted;
         this.requestAccepted = requestAccepted;
         this.requestRejected = requestRejected;
         this.pendingRequest = pendingRequest;
@@ -95,9 +45,34 @@ public class Volunteer {
         this.reasonForRejection = reasonForRejection;
         this.yourEventAccepted = yourEventAccepted;
         this.violation = violation;
-    }*/
+        this.justReceiveWarning = justReceiveWarning;
+        this.programNotification = programNotification;
+    }
 
-//    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> pastEvent, ArrayList<Event> yourEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection, ArrayList<Event> yourEventAccepted, ArrayList<String> violation, boolean justReceiveWarning) {
+//    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> yourEvent, ArrayList<Event> currentEvent, ArrayList<Event> pastEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection, ArrayList<Event> yourEventAccepted, ArrayList<String> violation, boolean justReceiveWarning, ArrayList<String> programNotification) {
+//        this.age = age;
+//        this.phoneNumber = phoneNumber;
+//        this.currentLocation = currentLocation;
+//        this.gmail = gmail;
+//        this.username = username;
+//        this.password = password;
+//        this.yourEvent = yourEvent;
+//        this.currentEvent = currentEvent;
+//        this.pastEvent = pastEvent;
+//        this.requestAccepted = requestAccepted;
+//        this.requestRejected = requestRejected;
+//        this.pendingRequest = pendingRequest;
+//        this.isAdmin = isAdmin;
+//        this.secretIdentification = secretIdentification;
+//        this.yourEventRejected = yourEventRejected;
+//        this.reasonForRejection = reasonForRejection;
+//        this.yourEventAccepted = yourEventAccepted;
+//        this.violation = violation;
+//        this.justReceiveWarning = justReceiveWarning;
+//        this.programNotification = programNotification;
+//    }
+
+    //    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> pastEvent, ArrayList<Event> yourEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection, ArrayList<Event> yourEventAccepted, ArrayList<String> violation, boolean justReceiveWarning, ArrayList<String> programNotification) {
 //        this.age = age;
 //        this.phoneNumber = phoneNumber;
 //        this.currentLocation = currentLocation;
@@ -116,28 +91,24 @@ public class Volunteer {
 //        this.yourEventAccepted = yourEventAccepted;
 //        this.violation = violation;
 //        this.justReceiveWarning = justReceiveWarning;
+//        this.programNotification = programNotification;
 //    }
 
-    public Volunteer(int age, String phoneNumber, String currentLocation, String gmail, String username, String password, ArrayList<Event> pastEvent, ArrayList<Event> yourEvent, ArrayList<Event> requestAccepted, ArrayList<Event> requestRejected, ArrayList<Pair<Volunteer, Event>> pendingRequest, boolean isAdmin, String secretIdentification, ArrayList<Event> yourEventRejected, ArrayList<Integer> reasonForRejection, ArrayList<Event> yourEventAccepted, ArrayList<String> violation, boolean justReceiveWarning, ArrayList<String> programNotification) {
-        this.age = age;
-        this.phoneNumber = phoneNumber;
-        this.currentLocation = currentLocation;
-        this.gmail = gmail;
-        this.username = username;
-        this.password = password;
-        this.pastEvent = pastEvent;
-        this.yourEvent = yourEvent;
-        this.requestAccepted = requestAccepted;
-        this.requestRejected = requestRejected;
-        this.pendingRequest = pendingRequest;
-        this.isAdmin = isAdmin;
-        this.secretIdentification = secretIdentification;
-        this.yourEventRejected = yourEventRejected;
-        this.reasonForRejection = reasonForRejection;
-        this.yourEventAccepted = yourEventAccepted;
-        this.violation = violation;
-        this.justReceiveWarning = justReceiveWarning;
-        this.programNotification = programNotification;
+
+    public ArrayList<Event> getPastEventCompleted() {
+        return pastEventCompleted;
+    }
+
+    public void setPastEventCompleted(ArrayList<Event> pastEventCompleted) {
+        this.pastEventCompleted = pastEventCompleted;
+    }
+
+    public ArrayList<Event> getCurrentEvent() {
+        return currentEvent;
+    }
+
+    public void setCurrentEvent(ArrayList<Event> currentEvent) {
+        this.currentEvent = currentEvent;
     }
 
     public ArrayList<String> getProgramNotification() {

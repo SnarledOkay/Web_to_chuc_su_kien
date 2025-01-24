@@ -3,6 +3,7 @@ package EventVolunteerMatcher.data;
 import EventVolunteerMatcher.entities.*;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 public class DataBase {
     public static ArrayList<Volunteer> volunteerList = new ArrayList<>() ;
@@ -27,7 +28,24 @@ public class DataBase {
     public static ArrayList<String> volunteerMenu = new ArrayList<>() ;
     public static ArrayList<String> adminMenu = new ArrayList<>() ;
     public static ArrayList<String> mainAdminMenu = new ArrayList<>() ;
+    public static ArrayList<String> locationList = new ArrayList<>() ;
+    public static ArrayList<Event> eventCancelled = new ArrayList<>() ;
+    public static ArrayList<Event> eventCompleted = new ArrayList<>() ;
 
+    static {
+        locationList.add("N/A") ;
+        locationList.add("Hà Nội") ;
+        locationList.add("Hồ Chí Minh/Sài gòn") ;
+        locationList.add("Hải Phòng") ;
+        locationList.add("Đà Nẵng") ;
+        locationList.add("Cần Thơ") ;
+        locationList.add("Hue") ;
+        locationList.add("Hạ Long") ;
+        locationList.add("Nha Trang") ;
+        locationList.add("Vũng Tàu") ;
+        locationList.add("Bến Tre") ;
+        locationList.add("Cà Mau") ;
+    }
     static {
         mainAdminMenu.add("1 - View lists of admins");
         mainAdminMenu.add("2 - Assign user as admin");
@@ -46,17 +64,20 @@ public class DataBase {
     }
     static {
         volunteerMenu.add("0 - Access admin functions");
-        volunteerMenu.add("1 - View list of events") ;
+        volunteerMenu.add("1 - View events") ;
         volunteerMenu.add("2 - Create new events");
-        volunteerMenu.add("3 - View events that you host");
-        volunteerMenu.add("4 - Search event");
-        volunteerMenu.add("5 - Sign up for an event");
-        volunteerMenu.add("6 - View past events you have joined");
-        volunteerMenu.add("7 - View requests to participate in your events");
-        volunteerMenu.add("8 - Change personal information");
-        volunteerMenu.add("9 - Report an user");
-        volunteerMenu.add("10 - View community guidelines");
-        volunteerMenu.add("11 - Log out");
+        volunteerMenu.add("3 - Search event");
+        volunteerMenu.add("4 - Sign up for an event");
+        volunteerMenu.add("5 - View past events you have joined");
+        volunteerMenu.add("6 - View events that you host");
+        volunteerMenu.add("7 - View past events you have joined") ;
+        volunteerMenu.add("8 - View requests to participate in your events");
+        volunteerMenu.add("9 - Complete an event of yours") ;
+        volunteerMenu.add("10 - Cancel an event") ;
+        volunteerMenu.add("11 - Change personal information");
+        volunteerMenu.add("12 - Report an user");
+        volunteerMenu.add("13 - View community guidelines");
+        volunteerMenu.add("14 - Log out");
     }
 
     static {
@@ -69,6 +90,7 @@ public class DataBase {
         boolean isMainAdmin = true ;
         ArrayList<Event> pastEvent = new ArrayList<>() ;
         ArrayList<Event> yourEvent = new ArrayList<>() ;
+        ArrayList<Event> pastEventCompleted  = new ArrayList<>() ;
         ArrayList<Event> requestAccepted = new ArrayList<>() ;
         ArrayList<Event> requestRejected = new ArrayList<>();
         ArrayList<Pair<Volunteer,Event>> pendingRequest = new ArrayList<>();
@@ -79,7 +101,8 @@ public class DataBase {
         ArrayList<String> violation = new ArrayList<>();
         boolean neverReceiveWarning = false ;
         ArrayList<String> programNotification = new ArrayList<>() ;
-        Volunteer newVolunteer = new Volunteer(adminAge,adminTelephone,currentLocation,gmail,username,password,pastEvent,yourEvent,requestAccepted,requestRejected,pendingRequest,isMainAdmin,secretID,yourEventRejected,reasonForRejection,yourEventAccepted,violation,neverReceiveWarning,programNotification);
+        ArrayList<Event> currentEvent = new ArrayList<>();
+        Volunteer newVolunteer = new Volunteer(adminAge,adminTelephone,currentLocation,gmail,username,password,yourEvent, currentEvent,pastEvent,pastEventCompleted,requestAccepted,requestRejected,pendingRequest,isMainAdmin,secretID,yourEventRejected,reasonForRejection,yourEventAccepted,violation,neverReceiveWarning,programNotification);
         volunteerList.add(newVolunteer) ;
         adminList.add(newVolunteer) ;
     }

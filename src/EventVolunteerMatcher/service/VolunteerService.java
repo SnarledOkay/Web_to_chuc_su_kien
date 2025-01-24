@@ -11,69 +11,136 @@ import java.util.Scanner;
 
 public class VolunteerService {
     Utiles utiles = new Utiles() ;
+    EventService eventService = new EventService() ;
     public Volunteer createNewAccount(Scanner scanner){
-        System.out.println("Enter your information: ");
-        System.out.println("Enter your username: ");
+        System.out.println("Enter information for new account (enter 'exit' to escape): ");
+        System.out.print("Enter your username: ");
         String username = scanner.nextLine() ;
+        username = username.trim();
+        if(username.equalsIgnoreCase("exit")){
+            System.out.println("Account creation terminated");
+            return null ;
+        }
         while (utiles.checkUserNameExist(username)){
-            System.out.println("Username already existed, please enter another one or press 'exit' to escape");
+            System.out.print("An user is currently registering under this username\nEnter username: ");
             username = scanner.nextLine() ;
-            if(username.equalsIgnoreCase("exit")) return null ;
+            username = username.trim() ;
+            if(username.equalsIgnoreCase("exit")){
+                System.out.println("Account creation terminated");
+                return null ;
+            }
         }
-        System.out.println("Enter your age (age can not be changed and will be updated automatically); ");
+        System.out.print("Enter your age (age cannot be changed): ");
         int age = 6;
-        boolean inputValidity = false ;
-        while (!inputValidity) {
-            try {
-                age = Integer.parseInt(scanner.nextLine());
-                inputValidity = true ;
+        while (true){
+            age = utiles.enterInteger(scanner) ;
+            if(age >= 100 || age < 6){
+                System.out.println("Invalid age entered, please enter again");
             }
-            catch (NumberFormatException e){
-                System.out.println("Invalid input, please enter again");
-            }
+            else break;
         }
-        System.out.println("Enter your telephone number: ");
+        System.out.print("Enter your telephone number: ");
         String telephoneNumber = scanner.nextLine();
+        if(telephoneNumber.equalsIgnoreCase("exit")){
+            System.out.println("Account creation terminated");
+            return null ;
+        }
         while (utiles.checkTelephoneNumberExist(telephoneNumber) || !utiles.checkTelephoneNumberValidity(telephoneNumber)){
             if(!utiles.checkTelephoneNumberValidity(telephoneNumber)) System.out.println("Invalid telephone number (Expected format: Start with '0', only consists of 10 numbers 0-9)");
-            else System.out.println("One user is already using this number, please check again or press 'exit' to escape");
+            else System.out.println("An user is currently registering under this phone number");
+            System.out.print("Enter your telephone number: ");
             telephoneNumber = scanner.nextLine() ;
-            if(telephoneNumber.equalsIgnoreCase("exit")) return null ;
+            telephoneNumber = telephoneNumber.trim();
+            if(telephoneNumber.equalsIgnoreCase("exit")){
+                System.out.println("Account creation terminated");
+                return null ;
+            }
         }
-        System.out.println("Enter your current place of living: ");
-        String location = scanner.nextLine() ;
-        System.out.println("Enter your email address: ");
+        utiles.viewLocation();
+        int chooseLocation=0 ;
+        while(true){
+            chooseLocation = utiles.enterInteger(scanner) ;
+            if(chooseLocation <= 0 || chooseLocation>=DataBase.locationList.size()){
+                System.out.println("Invalid choice, please choose again");
+            }
+            else{
+                System.out.println("Location has been set to " + DataBase.locationList.get(chooseLocation));
+                break;
+            }
+        }
+        String location = DataBase.locationList.get(chooseLocation) ;
+        System.out.print("Enter your email address: ");
         String email = scanner.nextLine() ;
+        email = email.trim();
+        if(email.equalsIgnoreCase("exit")){
+            System.out.println("Account creation terminated");
+            return null ;
+        }
         while (utiles.checkGmailExist(email)){
-            System.out.println("One user is already using this email, please check again or press 'exit' to escape");
+            System.out.println("An user is currently registering under this email");
+            System.out.print("Enter your email address: ");
             email = scanner.nextLine() ;
-            if(email.equalsIgnoreCase("exit")) return null ;
+            email = email.trim();
+            if(email.equalsIgnoreCase("exit")){
+                System.out.println("Account creation terminated");
+                return null ;
+            }
         }
-        System.out.println("Enter your password (password needs to be 8-14 characters long and contains at least 1 number): ");
+        System.out.print("Enter password (Requirement: 8-14 characters long, contains 1+ numbers): ");
         String password = scanner.nextLine() ;
+        password = password.trim() ;
+        if(password.equalsIgnoreCase("exit")){
+            System.out.println("Account creation terminated");
+            return null ;
+        }
         while (!utiles.checkPasswordValidity(password)){
-            System.out.println("Invalid password form, please enter again (8-14 characters long, contains at least 1 number)");
+            System.out.println("Invalid password form\nExpected format: 8-14 characters long, contains 1+ numbers");
+            System.out.print("Enter your password: ");
             password = scanner.nextLine() ;
-            if(password.equalsIgnoreCase("exit")) return null ;
+            password = password.trim() ;
+            if(password.equalsIgnoreCase("exit")){
+                System.out.println("Account creation terminated");
+                return null ;
+            }
         }
-        System.out.println("Confirm your password: ");
+        System.out.print("Confirm password: ");
         String againPassword = scanner.nextLine() ;
-        while (!againPassword.equals(password)){
-            System.out.println("Password doesn't match, please enter again");
-            againPassword = scanner.nextLine() ;
-            if(againPassword.equalsIgnoreCase("exit")) return null ;
+        againPassword = againPassword.trim() ;
+        if(againPassword.equalsIgnoreCase("exit")){
+            System.out.println("Account creation terminated");
+            return null ;
         }
-        System.out.println("Password matched");
-        System.out.println("Enter your identification code (this code will be used when you want to change password and CAN NOT be changed in the future)");
-        System.out.println("Requirement: 6 characters long, 3 number, 3 character in capital, NO special character");
+        while (!againPassword.equals(password)){
+            System.out.println("Password doesn't match");
+            System.out.print("Confirm password: ");
+            againPassword = scanner.nextLine() ;
+            againPassword = againPassword.trim();
+            if(againPassword.equalsIgnoreCase("exit")){
+                System.out.println("Account creation terminated");
+                return null ;
+            }
+        }
+        System.out.println("Password matched\n");
+        System.out.println("An ID code is required");
+        System.out.println("ID code is necessary if you want to change your password");
+        System.out.println("Warning: this ID code is fixed and cannot be changed in the future");
+        System.out.println("ID code requirement: 3 numbers, 3 characters in capital, NO special character");
+        System.out.print("Enter ID code: ");
         String identificationCode = scanner.nextLine() ;
+        identificationCode = identificationCode.trim() ;
         while (!utiles.checkIDCodeValidity(identificationCode)){
-            System.out.println("Invalid ID code form, please re-enter or press exit to escape");
+            System.out.println("Invalid ID code format");
+            System.out.print("Enter ID code: ");
             identificationCode = scanner.nextLine() ;
-            if(identificationCode.equalsIgnoreCase("exit")) return null ;
+            identificationCode = identificationCode.trim() ;
+            if(identificationCode.equalsIgnoreCase("exit")){
+                System.out.println("Account creation terminated");
+                return null ;
+            }
         }
         ArrayList<Event> yourEvent = new ArrayList<>() ;
         ArrayList<Event> pastEvent = new ArrayList<>() ;
+        ArrayList<Event> pastEventCompleted = new ArrayList<>() ;
         ArrayList<Event> requestAccepted = new ArrayList<>() ;
         ArrayList<Event> requestRejected = new ArrayList<>() ;
         ArrayList<Pair<Volunteer,Event>> pendingRequest = new ArrayList<>() ;
@@ -84,99 +151,100 @@ public class VolunteerService {
         ArrayList<String> violation = new ArrayList<>() ;
         boolean justReceiveViolation = false ;
         ArrayList<String> programNotification = new ArrayList<>() ;
-        return new Volunteer(age,telephoneNumber,location,email,username,password,pastEvent,yourEvent,requestAccepted,requestRejected,pendingRequest,isAdmin,identificationCode,yourEventRejected, reasonEventRejected, yourEventAccepted, violation, justReceiveViolation, programNotification) ;
+        ArrayList<Event> currentEvent = new ArrayList<>() ;
+        return new Volunteer(age,telephoneNumber,location,email,username,password,yourEvent, currentEvent,pastEvent,pastEventCompleted,requestAccepted,requestRejected,pendingRequest,isAdmin,identificationCode,yourEventRejected, reasonEventRejected, yourEventAccepted, violation, justReceiveViolation, programNotification) ;
     }
 
     public Volunteer SignInService(Scanner scanner){
-        System.out.println("Enter username: ");
+        System.out.print("Enter username: ");
         String username = scanner.nextLine() ;
+        username = username.trim();
+        if(username.equalsIgnoreCase("exit")){
+            System.out.println("Sign-in process terminated");
+            return null ;
+        }
         while (!utiles.checkUserNameExist(username)){
             if(utiles.checkUsernameExistPending(username)){
-                System.out.println("This account hasn't been activated yet");
+                System.out.println("Account has not been activated");
                 return null ;
             }
-            System.out.println("User doesn't exist, please check and re-enter or press 'exit' to escape: ");
+            System.out.println("Account doesn't exist");
+            System.out.print("Enter username (enter 'exit' to escape): ");
             username = scanner.nextLine() ;
-            if(username.equalsIgnoreCase("exit")) return null ;
+            username = username.trim();
+            if(username.equalsIgnoreCase("exit")){
+                System.out.println("Sign-in process terminated");
+                return null ;
+            }
         }
-        System.out.println("Username exists, please enter your password");
+        System.out.println("Username matched");
+        System.out.print("Enter password: ");
         Volunteer volunteer = utiles.findVolunteerByUsername(username) ;
         String password = scanner.nextLine() ;
+        password = password.trim();
+        if(password.equalsIgnoreCase("exit")){
+            System.out.println("Sign-in process terminated");
+            return null ;
+        }
         while(!utiles.checkPasswordTrue(password,volunteer)){
-            System.out.println("Wrong password, please check and enter again or press 'exit' to escape");
+            System.out.println("Password not matched");
+            System.out.print("Enter password: ");
             password = scanner.nextLine() ;
-            if(password.equalsIgnoreCase("exit")) return  null ;
+            password = password.trim() ;
+            if(password.equalsIgnoreCase("exit")) {
+                System.out.println("Sign-in process terminated");
+                return null ;
+            }
         }
+        System.out.println("Password matched");
         return volunteer ;
-    }
-
-    public void viewEventsYouParticipated(Volunteer volunteer){
-        System.out.print("You have participated " + volunteer.getPastEvent().size() + " events: ");
-        for(Event event:volunteer.getPastEvent()){
-            System.out.println(event.getEventName() + " - " + event.getEventDate() + " - " + event.getLocation());
-        }
     }
 
     public void signUpForEvent(Volunteer volunteer, Scanner scanner){
         if(DataBase.eventList.isEmpty()){
-            System.out.println("There's currently no event to sign up for");
+            System.out.println("There's no event to participate");
             return;
         }
-        System.out.println("List of events: ");
-        int number = 0 ;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
-        for(Event event: DataBase.eventList){
-            number++ ;
-            System.out.println(number+ ". " + event.getEventName() + "    " + event.getEventDate().format(formatter) +
-                    "    " + event.getLocation() + "    "+event.getMinimumAge()+"+"+"    "+event.getParticipantList().size()+"/"+event.getVolunteerLimit());
-        }
-        int option=1;
-        boolean checker = false ;
-        do{
-            System.out.print("Select event you want to participate (type 0 to escape): ");
-            DataBase.inputValidity = false ;
-            while (!DataBase.inputValidity){
-                try{
-                    option = Integer.parseInt(scanner.nextLine()) ;
-                    DataBase.inputValidity = true ;
-                }
-                catch (NumberFormatException e){
-                    System.out.println("Invalid input, please enter again");
-                }
+        eventService.viewAllEvent();
+        int option ;
+        while(true){
+            System.out.print("Select event (enter 0 to stop): ");
+            option = utiles.enterInteger(scanner) ;
+            if(option == 0){
+                System.out.println("Process terminated");
+                break;
             }
-            if(option > number || option < 0){
-                System.out.println("Invalid choice. Do you want to return to main menu?");
-                System.out.println("Press 'y' to confirm or any other key to cancel");
-                String choice = scanner.nextLine() ;
-                if(choice.equalsIgnoreCase("y")){
-                    System.out.println("Returning to main menu...");
-                    return;
-                }
-                else System.out.println("Action cancelled. Please enter your choice again");
-            }
-            else if(option == 0){
-                System.out.println("Confirm action: Press 'Yes' to return to main menu");
-                String choice = scanner.nextLine() ;
-                if(choice.equalsIgnoreCase("yes")) {
-                    System.out.println("Returning to main menu...");
-                    return;
-                }
-                else System.out.println("Action cancelled");
+            else if(option >= DataBase.eventList.size() || option < 0){
+                System.out.println("Invalid choice, please enter again");
             }
             else {
-                System.out.println("Do you confirm you want to participate?");
-                System.out.println("Press 'Y' to confirm or any other key to cancel");
-                String choice = scanner.nextLine();
-                if (choice.equalsIgnoreCase("y")) {
-                    System.out.println("Your request to participate in this event has been sent to the organizer");
-                    Volunteer mainOrganizer = DataBase.eventList.get(option - 1).getMainOrganizer();
-                    mainOrganizer.getPendingRequest().add(new Pair<>(volunteer, DataBase.eventList.get(option - 1)));
-                } else {
-                    System.out.println("Action cancelled");
+                Event chosenEvent = DataBase.eventList.get(option-1) ;
+                if(chosenEvent.getMinimumAge() > volunteer.getAge()){
+                    System.out.println("You do not meet the age requirement for this event");
                 }
+                else{
+                    System.out.println("Do you confirm that you want to participate? Yes/No");
+                    String choice ;
+                    while(true){
+                        choice = scanner.nextLine() ;
+                        if(choice.equalsIgnoreCase("yes")){
+                            System.out.println("Your request to participate has been sent to the organizer");
+                            Volunteer mainOrganizer = DataBase.eventList.get(option - 1).getMainOrganizer();
+                            mainOrganizer.getPendingRequest().add(new Pair<>(volunteer, DataBase.eventList.get(option - 1)));
+                            break;
+                        }
+                        else if(choice.equalsIgnoreCase("no")){
+                            System.out.println("Registration cancelled");
+                            break;
+                        }
+                        else{
+                            System.out.println("Invalid choice, please enter again");
+                        }
+                    }
+                }
+
             }
         }
-        while(true) ;
     }
 
     public void confirmParticipation(Scanner scanner, Volunteer volunteer){
@@ -186,7 +254,7 @@ public class VolunteerService {
             for (Pair<Volunteer,Event> pair:volunteer.getPendingRequest()){
                 Volunteer targetVolunteer = pair.getVolunteer() ;
                 Event targetEvent = pair.getEvent() ;
-                System.out.println("Requested by: " + targetVolunteer.getUsername());
+                System.out.println("Request to participate by: " + targetVolunteer.getUsername());
                 System.out.println("Age: " + targetVolunteer.getAge());
                 System.out.println("Place of living: " + targetVolunteer.getCurrentLocation());
                 System.out.println("Contact: Phone: " + targetVolunteer.getPhoneNumber() + " / Email: " + targetVolunteer.getGmail());
@@ -200,10 +268,12 @@ public class VolunteerService {
                 System.out.println("Do you confirm request to participate?");
                 System.out.println("Yes / No (Any other choice will be automatically considered 'no')");
                 String choice = scanner.nextLine() ;
+                choice = choice.trim() ;
                 if(choice.equalsIgnoreCase("yes")){
                     System.out.println("You have accepted request to participate");
                     targetVolunteer.getRequestAccepted().add(targetEvent) ;
                     targetEvent.getParticipantList().add(targetVolunteer) ;
+                    targetVolunteer.getCurrentEvent().add(targetEvent) ;
                 }
                 else{
                     System.out.println("You have rejected request to participate");
@@ -218,16 +288,7 @@ public class VolunteerService {
         while(true){
             int option = 1 ;
             System.out.print("Choose user to report (choose 0 to escape): ");
-            DataBase.inputValidity = false ;
-            while (!DataBase.inputValidity){
-                try{
-                    option = Integer.parseInt(scanner.nextLine()) ;
-                    DataBase.inputValidity = true ;
-                }
-                catch (NumberFormatException e){
-                    System.out.println("Invalid input, please enter again");
-                }
-            }
+            option = utiles.enterInteger(scanner) ;
             if(option == 0){
                 System.out.println("Returning to main menu...");
                 break ;
@@ -241,18 +302,9 @@ public class VolunteerService {
                     System.out.println(i+" - " + DataBase.warningToUser.get(i));
                 }
                 while(true){
-                    System.out.print("Choose reason to report: ");
+                    System.out.print("Choose reason for report: ");
                     DataBase.inputValidity = false;
-                    int choice = 1 ;
-                    while (!DataBase.inputValidity){
-                        try{
-                            choice = Integer.parseInt(scanner.nextLine()) ;
-                            DataBase.inputValidity = true ;
-                        }
-                        catch (NumberFormatException e){
-                            System.out.println("Invalid input, please enter again");
-                        }
-                    }
+                    int choice = utiles.enterInteger(scanner) ;
                     if(choice < 0 || choice >= DataBase.warningToUser.size()){
                         System.out.println("Invalid choice, please enter again");
                     }
@@ -273,15 +325,7 @@ public class VolunteerService {
         while(true){
             int option = 1 ;
             System.out.print("Choose admin to report (choose 0 to escape): ");
-            while (!DataBase.inputValidity){
-                try{
-                    option = Integer.parseInt(scanner.nextLine()) ;
-                    DataBase.inputValidity = true ;
-                }
-                catch (NumberFormatException e){
-                    System.out.println("Invalid input, please enter again");
-                }
-            }
+            option = utiles.enterInteger(scanner) ;
             if(option == 0){
                 System.out.println("Returning to main menu...");
                 break ;
@@ -296,16 +340,7 @@ public class VolunteerService {
                 }
                 while(true){
                     System.out.print("Choose reason to report: ");
-                    int choice = 1 ;
-                    while (!DataBase.inputValidity){
-                        try{
-                            choice = Integer.parseInt(scanner.nextLine()) ;
-                            DataBase.inputValidity = true ;
-                        }
-                        catch (NumberFormatException e){
-                            System.out.println("Invalid input, please enter again");
-                        }
-                    }
+                    int choice = utiles.enterInteger(scanner) ;
                     if(choice < 0 || choice >= DataBase.warningToUser.size()){
                         System.out.println("Invalid choice, please enter again");
                     }
@@ -317,6 +352,219 @@ public class VolunteerService {
                 }
                 break;
             }
+        }
+    }
+
+    public void completeAnEvent(Scanner scanner,Event event){
+        System.out.println("Do you confirm the event has finished? Yes/No/Exit");
+        String choice ;
+        while(true){
+            choice = scanner.nextLine() ;
+            if(choice.equalsIgnoreCase("exit")){
+                System.out.println("Process terminated");
+                return;
+            }
+            if(choice.equalsIgnoreCase("no")){
+                System.out.println("Action has been cancelled");
+                return;
+            }
+            if(choice.equalsIgnoreCase("yes")){
+                System.out.println("Event has completed, please finish the remaining process");
+                break;
+            }
+            else{
+                System.out.println("Invalid choice, please enter again");
+            }
+        }
+        if(event.getParticipantList().isEmpty()){
+            System.out.println("Sorry, no one participated in this event :(");
+        }
+        else{
+            System.out.println("Please confirm the participation of volunteers: ");
+            ArrayList<Volunteer> participantList = event.getParticipantList() ;
+            int number= 0;
+            for (Volunteer participant: participantList) {
+                number++;
+                System.out.println(number + " - " + participant.getUsername() + "     " + participant.getAge() + "     " + participant.getCurrentLocation());
+                System.out.println("Did this user participate in your event? Yes/No");
+                String confirmation;
+                while (true) {
+                    confirmation = scanner.nextLine();
+                    if (confirmation.equalsIgnoreCase("yes")) {
+                        participant.getPastEvent().add(event);
+                        System.out.println("Participation confirmed!\n");
+                        break;
+                    } else if (confirmation.equalsIgnoreCase("no")) {
+                        System.out.println("Confirm the action: Yes/No");
+                        String confirmAgain;
+                        while (true) {
+                            confirmAgain = scanner.nextLine();
+                            if (confirmAgain.equalsIgnoreCase("yes")) {
+                                System.out.println("Participation denied!\n");
+                                break;
+                            } else if (confirmAgain.equalsIgnoreCase("no")) {
+                                System.out.println("Process terminated\n");
+                                break;
+                            } else {
+                                System.out.println("Invalid choice, please enter again");
+                            }
+                        }
+                        if (!confirmAgain.equalsIgnoreCase("no")) break;
+                    } else {
+                        System.out.println("Invalid choice, please enter again");
+                    }
+                }
+            }
+            System.out.println("Process finished");
+            System.out.println("Returning to main menu...");
+        }
+        int completedEventId=0 ;
+        for(int i = 0 ; i < DataBase.eventList.size();i++){
+            if(event.equals(DataBase.eventList.get(i))){
+                completedEventId = i ;
+            }
+            if(i > completedEventId){
+                int currentID = DataBase.eventList.get(i).getId() ;
+                DataBase.eventList.get(i).setId(currentID-1);
+            }
+        }
+        for(int i = 0 ; i < event.getMainOrganizer().getYourEvent().size() ; i++){
+            if(event.getMainOrganizer().getYourEvent().get(i).equals(event)){
+                event.getMainOrganizer().getYourEvent().remove(i) ;
+                break;
+            }
+        }
+        event.getMainOrganizer().getPastEventCompleted().add(event);
+        DataBase.eventCompleted.add(DataBase.eventList.get(completedEventId)) ;
+        DataBase.eventList.remove(completedEventId) ;
+    }
+
+    public void viewEventsYouCreated(Volunteer volunteer){
+        System.out.println("You are hosting " + volunteer.getYourEvent().size() + " events: ");
+        int number = 0 ;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
+        for(int i = 0 ; i < volunteer.getYourEvent().size();i++){
+            Event event = volunteer.getYourEvent().get(i) ;
+            number++ ;
+            System.out.println(number+" - " + event.getEventName()+"     "+event.getEventDate().format(formatter)+"     "+event.getLocation()+"     "+event.getParticipantList().size()+"/"+event.getVolunteerLimit());
+        }
+    }
+
+    public void viewEventsYouParticipated(Volunteer volunteer){
+        System.out.println("You have been confirmed to participate in " + volunteer.getPastEvent().size()+ " events: ");
+        int number = 0 ;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy") ;
+        for(Event event:volunteer.getPastEvent()){
+            number++ ;
+            System.out.println(number+" - " + event.getEventName()+"     "+event.getEventDate().format(formatter)+"     "+event.getLocation()+"     "+event.getMinimumAge()+"+");
+        }
+    }
+
+    public void cancelParticipation(Volunteer volunteer, Event event){
+        int number = 0 ;
+        for(Volunteer participant:event.getParticipantList()){
+            if(participant.equals(volunteer)){
+                event.getParticipantList().remove(number) ;
+                System.out.println("You have cancelled your participation in this event");
+                Volunteer mainOrganizer = event.getMainOrganizer() ;
+                mainOrganizer.getProgramNotification().add("User " + volunteer.getUsername()+" has cancelled participation in your event " + event.getEventName());
+                for(int i = 0 ; i < volunteer.getCurrentEvent().size() ; i++){
+                    if(volunteer.getCurrentEvent().get(i).equals(event)){
+                        volunteer.getCurrentEvent().remove(i) ;
+                        break;
+                    }
+                }
+                return;
+            }
+            number++ ;
+        }
+    }
+
+    public void cancelAnEvent(Scanner scanner, Event event){
+        System.out.println("Do you confirm to cancel this event? Yes/No/Exit");
+        String choice ;
+        while(true){
+            choice = scanner.nextLine() ;
+            if(choice.equalsIgnoreCase("exit")){
+                System.out.println("Action terminated");
+                return;
+            }
+            if(choice.equalsIgnoreCase("no")){
+                System.out.println("Action has been cancelled");
+                return;
+            }
+            if(choice.equalsIgnoreCase("yes")){
+                System.out.println("Event has been cancelled");
+                break;
+            }
+            else{
+                System.out.println("Invalid choice, please enter again");
+            }
+        }
+        for(int i = 0 ; i < event.getParticipantList().size() ; i++){
+            Volunteer volunteer = event.getParticipantList().get(i) ;
+            for(int j = 0 ; j < volunteer.getCurrentEvent().size() ; j++){
+                if(event.equals(volunteer.getCurrentEvent().get(j))){
+                    volunteer.getCurrentEvent().remove(j) ;
+                    break ;
+                }
+            }
+        }
+        int cancelledEventId=0 ;
+        for(int i = 0 ; i < DataBase.eventList.size();i++){
+            if(event.equals(DataBase.eventList.get(i))){
+                cancelledEventId = i ;
+            }
+            if(i > cancelledEventId){
+                int currentID = DataBase.eventList.get(i).getId() ;
+                DataBase.eventList.get(i).setId(currentID-1);
+            }
+        }
+        Volunteer organizer = event.getMainOrganizer() ;
+        for(int i = 0 ; i < organizer.getYourEvent().size();i++){
+            Event thisEvent = organizer.getYourEvent().get(i) ;
+            if(thisEvent.equals(event)){
+                organizer.getYourEvent().remove(i) ;
+                break;
+            }
+        }
+        DataBase.eventCancelled.add(DataBase.eventList.get(cancelledEventId)) ;
+        DataBase.eventList.remove(cancelledEventId) ;
+    }
+
+    public void viewAccountInformation(Volunteer volunteer){
+        System.out.println("User: " + volunteer.getUsername());
+        System.out.println("Age: " + volunteer.getAge());
+        System.out.println("Current location: " + volunteer.getCurrentLocation());
+        System.out.println("Contact telephone: " + volunteer.getPhoneNumber());
+        System.out.println("Contact email: " + volunteer.getGmail());
+        System.out.println("You have participated in " + volunteer.getPastEvent().size() + " events");
+        System.out.println("You are currently participating in " + volunteer.getCurrentEvent().size() + " events");
+        System.out.println("You have hosted " + volunteer.getPastEventCompleted().size() + " events");
+        System.out.println("You are currently hosting "+volunteer.getYourEvent().size() + " events");
+
+        if(volunteer.getViolation().isEmpty()){
+            System.out.println("You haven't violated any guideline");
+        }
+        else{
+            System.out.println("You have violated our guidelines " + volunteer.getViolation().size() + " times");
+            System.out.println("Please note that your account can be suspended if you violate too many times");
+        }
+    }
+
+    public void viewEventYouAreJoining(Volunteer volunteer){
+        System.out.println("\nYou are currently participating in " + volunteer.getCurrentEvent().size() + " events: ");
+        for(int i = 0 ; i < volunteer.getCurrentEvent().size();i++){
+            Event event = volunteer.getCurrentEvent().get(i) ;
+            utiles.printEvent(event);
+        }
+    }
+
+    public void viewYourEventCompleted(Volunteer volunteer){
+        System.out.println("You have hosted and completed " + volunteer.getPastEventCompleted().size()+ " events:");
+        for(int i = 0 ; i < volunteer.getPastEventCompleted().size() ; i++){
+            Event event = volunteer.getPastEventCompleted().get(i) ;
+            utiles.printEvent(event);
         }
     }
 }
